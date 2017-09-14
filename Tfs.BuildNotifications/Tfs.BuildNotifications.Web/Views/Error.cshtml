@@ -1,0 +1,20 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<Exception>
+
+@{ 
+    ViewBag.Title = "Error";
+    Layout = "Views/Shared/_Layout.cshtml";
+}
+
+<h2>Sorry, something went wrong...</h2>
+
+<p>
+    Oops, an error seems to have occurred. Sorry about that.
+</p>
+
+@if (Model != null)
+{
+    <p><strong>Error detail: </strong></p>
+    <p class="exception">@Model.ToString()</p>
+}
+
+<p>Please try again or <a href="#" onclick="window.history.go(-1);">go back</a>.</p>

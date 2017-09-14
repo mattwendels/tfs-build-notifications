@@ -1,0 +1,264 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<Tfs.BuildNotifications.Web.ViewModels.HomeViewModel>
+
+@{ 
+    ViewBag.Title = "Home";
+    Layout = "Views/Shared/_Layout.cshtml";
+}
+
+<noscript>
+    <div class="no-script">
+        <p>
+            <strong>Warning: </strong>Javascript must be enabled for some features of the TFS Build Notifications dashboard
+            and configuration tools to function properly.
+        </p>
+    </div>
+</noscript>
+
+@if (!Model.Connections.Any())
+{
+    <h3>Add a Connection</h3>
+
+    <div class="info-box">
+        <p>
+            You don't have any TFS projects/servers configured to monitor builds. Get started by 
+            <a href="/addconnection">adding a TFS connection</a>
+        </p>
+    </div>
+}
+else
+{
+    <script type="text/javascript" src="~/Content/Scripts/jquery.signalR-2.2.1.js"></script>
+    <script src="signalr/hubs"></script>
+    <script type="text/javascript" src="~/Content/Scripts/dashboard.js"></script>
+
+    <h2>Dashboard</h2>
+
+    <div class="edit-links">
+        <a href="/addconnection">Add new connection</a>
+    </div>
+
+    if (Model.AnyBuildsConfigured)
+    {
+        <div id="buildsRunning">
+            <h3>Running Now</h3>
+            <p id="noBuildsRunningMessage">There are no builds currently running.</p>
+        </div>
+    }
+
+    <div class="clearfix"></div>
+
+    
+    foreach (var dashboardConnection in Model.Connections)
+    {
+        <div class="connection">
+            <h3>
+                <a href="@dashboardConnection.Connection.TfsServerUrl" target="_blank">
+                    @dashboardConnection.Connection.TfsServerUrl (@dashboardConnection.Connection.TfsServerDeployment.ToFriendlyName())
+                </a>
+                <span class="conn-close">
+                    <img src="~/Content/Images/minus.png" title="Collapse" />
+                    <img src="~/Content/Images/plus.png" style="display: none;" title="Expand" />
+                </span>
+            </h3>
+            <div>
+
+                @if (dashboardConnection.Connection.Broken)
+                {
+                    <div class="error">
+                        <p>
+                            An error occurred whilst trying to connect to this TFS instance. Error detail: 
+                            '@dashboardConnection.Connection.LastConnectionError' 
+                        </p>
+
+                        <p><a href="/editconnection/@dashboardConnection.Connection.Id">Click here</a> to edit connection details.</p>
+
+                    </div>
+
+                    <div class="edit-links">
+                        <a class="removeConnection" href="javascript:void(0)" data-del-connection-id="@dashboardConnection.Connection.Id">Remove connection</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="edit-links">
+                        <a href="/addproject/@dashboardConnection.Connection.Id">Add project</a>
+                        &nbsp;&nbsp;|&nbsp;&nbsp;
+                        <a href="/editconnection/@dashboardConnection.Connection.Id">Edit connection</a>
+                        &nbsp;&nbsp;|&nbsp;&nbsp;
+                        <a class="removeConnection" href="javascript:void(0)" data-del-connection-id="@dashboardConnection.Connection.Id">Remove connection</a>
+                    </div>
+
+                    if (!dashboardConnection.Projects.Any())
+                    {
+                        <div class="info-box">
+                            <p>
+                                You don't have any TFS projects configured to monitor builds for this connection.
+                                <a href="/addproject/@dashboardConnection.Connection.Id">Click here to add a project</a>.
+                            </p>
+                        </div>
+                    }
+
+                    foreach (var dashboardProject in dashboardConnection.Projects.OrderBy(p => p.Project.Name))
+                    {
+                        <p><strong>@dashboardProject.Project.Name</strong> (monitoring @dashboardProject.BuildDefinitions.Count build @("definition".Pluralize(dashboardProject.BuildDefinitions.Count)))</p>
+
+                        <div class="edit-links">
+                            <a href="/addbuilds?connectionId=@dashboardConnection.Connection.Id&projectId=@dashboardProject.Project.Id">Add build(s)</a>
+                            &nbsp;&nbsp;|&nbsp;&nbsp;
+                            <a class="removeProject" href="javascript:void(0)" data-del-connection-id="@dashboardConnection.Connection.Id" data-del-project-id="@dashboardProject.Project.Id">Remove project</a>
+                        </div>
+
+                        if (!dashboardProject.BuildDefinitions.Any())
+                        {
+                            <div class="info-box">
+                                <p>
+                                    You are not monitoring any builds for this project.
+                                    <a href="/addbuilds?connectionId=@dashboardConnection.Connection.Id&projectId=@dashboardProject.Project.Id">
+                                        Click here to configure build notifications
+                                    </a>.
+                                </p>
+                            </div>
+                        }
+                        else
+                        {
+                            var i = 0;
+
+                            foreach (var buildDefinition in dashboardProject.BuildDefinitions.OrderByDescending(b => b.RequiresAttention).ThenBy(b => b.Name))
+                            {
+                                <div class="build-summary" data-local-id="@buildDefinition.LocalId"
+                                     data-connection-id="@dashboardConnection.Connection.Id"
+                                     data-project-id="@dashboardProject.Project.Id">
+                                    <p>
+                                        <span class="status-image"><img src="~/Content/Images/@buildDefinition.StatusImageFileName" /></span>
+                                        <a title="@buildDefinition.Name" href="@buildDefinition.Url" target="_blank">@buildDefinition.ShortName</a>
+                                    </p>
+
+                                    <a href="javascript:void(0)" class="removeBuild" data-local-id="@buildDefinition.LocalId" title="Delete">
+                                        <img src="~/Content/Images/delete.png" />
+                                    </a>
+
+                                    <div class="build-info">
+                                        @if (!buildDefinition.Builds.Any())
+                                        {
+                                            <p>No builds available for this definition.</p>
+                                        }
+                                        else
+                                        {
+                                            if (buildDefinition.IsRunning)
+                                            {
+                                                <p><strong>Requested by:</strong> @buildDefinition.LastRequestedBy</p>
+                                                <p><strong>Started at:</strong> @buildDefinition.LastStarted</p>
+                                            }
+                                            else
+                                            {
+                                                <p><strong>Last requested by:</strong> @buildDefinition.LastRequestedBy</p>
+                                                <p><strong>Last completed:</strong> @buildDefinition.LastFinished</p>
+                                            }
+
+                                            <div class="build-history">
+                                                @foreach (var build in buildDefinition.Builds.Take(6))
+                                                {
+                                                    <a target="_blank" href="@build.Url" title="@("Status: " + build.Result.ToBuildResult().ToString() + ". Finished at " + (build.LastFinished == null ? "N/A" : build.LastFinished.ToString()))">
+                                                        <span class="@Model.GetHistoryCssClassName(build)"></span>
+                                                    </a>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+
+                                i++;
+                            }
+
+                            <div class="clearfix"></div>
+                        }
+
+                    }
+                }
+            </div>
+        </div>
+    }
+
+    if (Model.AnyBuildsConfigured)
+    {
+        <script type="text/javascript">
+            var d = new dashboardLib({
+                buildsRunningContainer: $('#buildsRunning'),
+                noBuildsRunningMessage: $('#noBuildsRunningMessage'),
+                removeBuildClass: '.removeBuild'
+            });
+        </script>
+    }
+
+    <script type="text/javascript">
+        var connClose = $('.conn-close');
+        var removeConnection = $('.removeConnection');
+        var removeProject = $('.removeProject');
+
+        var onDeleteSuccess = function (data) {
+            window.location.reload();
+        };
+
+        var onDeleteFail = function (jqXHR, textStatus) {
+            alert('Sorry, something went wrong. Please check the console and/or error logs.');
+
+            console.log('onDeleteFail invoked.');
+            console.log(jqXHR);
+            console.log(textStatus);
+        };
+
+        // Slide up/down connections.
+        connClose.click(function () {
+            $(this).parents('div').eq(0).find('div').eq(0).slideToggle();
+            $(this).find('img').toggle();
+        });
+
+        // Remove connection.
+        removeConnection.click(function () {
+            if (confirm('Are you sure you want to delete this connection? All associated projects and build definitions will no longer be monitored.')) {
+
+                $.ajax({
+                    url: '/deleteconnection',
+                    method: 'POST',
+                    data: { ConnectionId: $(this).attr('data-del-connection-id') }
+                })
+                .done(onDeleteSuccess)
+                .fail(onDeleteFail);
+            }
+        });
+
+        // Remove project.
+        removeProject.click(function () {
+            if (confirm('Are you sure you want to delete this project? All associated build definitions will no longer be monitored.')) {
+
+                $.ajax({
+                    url: '/deleteproject',
+                    method: 'POST',
+                    data: {
+                        ConnectionId: $(this).attr('data-del-connection-id'),
+                        ProjectId: $(this).attr('data-del-project-id')
+                    }
+                })
+                .done(onDeleteSuccess)
+                .fail(onDeleteFail);
+            }
+        });
+
+        // Remove build.
+        $('body').on('click', '.removeBuild', function () {
+            if (confirm('Are you sure you want to stop receiving notifications for this build definition?')) {
+
+                $.ajax({
+                    url: '/deletebuild',
+                    method: 'POST',
+                    data: {
+                        LocalDefId: $(this).attr('data-local-id')
+                    }
+                })
+                .done(onDeleteSuccess)
+                .fail(onDeleteFail);
+            }
+        });
+
+    </script>
+}

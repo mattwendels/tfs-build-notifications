@@ -1,0 +1,13 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase
+
+@{ 
+    ViewBag.Title = "Page Not Found";
+    Layout = "Views/Shared/_Layout.cshtml";
+}
+
+<h2>Page Not Found</h2>
+
+<p>
+    Sorry, we couldn't find the the page you were looking for. Please try again or 
+    <a href="#" onclick="window.history.go(-1);">go back</a>.
+</p>

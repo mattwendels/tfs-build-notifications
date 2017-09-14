@@ -1,0 +1,55 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<Tfs.BuildNotifications.Web.ViewModels.AddProjectViewModel>
+
+@{ 
+    ViewBag.Title = "Add Projects";
+    Layout = "Views/Shared/_Layout.cshtml";
+}
+
+<p class="go-back"><a href="javascript:void(0)" onclick="window.history.go(-1)">Go back</a></p>
+
+<h2>Add Projects</h2>
+
+<h3><strong>@Model.Connection.TfsServerUrl (@Model.Connection.TfsServerDeployment.ToFriendlyName())</strong></h3>
+
+@if (!Model.ProjectSelections.Any())
+{
+    <div class="info-box">
+        <p>No projects found (or visible) for the current connection.</p>
+    </div>
+
+    <p><a href="/">Go back</a></p>
+}
+else
+{
+    var count = 0;
+
+    <p>Select one or more Team Projects to set up build notifications for.</p>
+
+    <form action="/addproject" method="post">
+
+        <input type="hidden" name="ConnectionId" value="@Model.Connection.Id" />
+
+        <div class="selection-list">
+            @foreach (var item in Model.ProjectSelections)
+            {
+                <div class="select-selection">
+                    <input type="hidden" name="Id[@count]" value="@item.Id" />
+                    <input type="hidden" name="Name[@count]" value="@item.Name" />
+                    <input type="checkbox" id="Selected_@count" name="Selected[@count]" @if (item.Disabled) { <text>disabled="disabled"</text> } />
+
+                    <label for="Selected_@count" @if (item.Disabled) { <text>class="selection-disabled"</text> }>
+                        @item.Name
+                        @if (item.Disabled)
+                        {
+                            <text>(already added to configuration)</text>
+                        }
+                    </label>
+                </div>
+                
+                count++;
+            }
+        </div>
+
+        <input id="projectSelect" type="submit" class="button" value="Continue" />
+    </form>
+}

@@ -1,0 +1,16 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<Tfs.BuildNotifications.Web.ViewModels.AddEditConnectionViewModel>
+
+@{ 
+    ViewBag.Title = "Add a Project";
+    Layout = "Views/Shared/_Layout.cshtml";
+}
+
+<p class="go-back"><a href="javascript:void(0)" onclick="window.history.go(-1)">Go back</a></p>
+
+<h2>Edit Connection</h2>
+
+@Html.Partial("Shared/_AddEditConnection", Model)
+
+<script type="text/javascript">
+    tfsLocation.find('input[type="radio"]:checked').change();
+</script>

@@ -1,0 +1,22 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<Tfs.BuildNotifications.Web.ViewModels.AddEditConnectionViewModel>
+
+@{ 
+    ViewBag.Title = "Add a Project";
+    Layout = "Views/Shared/_Layout.cshtml";
+}
+
+<p class="go-back"><a href="javascript:void(0)" onclick="window.history.go(-1)">Go back</a></p>
+
+<h2>Add a Connection</h2>
+
+@if (Model.NewConfiguration)
+{
+    <div class="info-box">
+        <p>
+            You don't have any TFS projects/servers configured to monitor builds. Get started by adding a TFS connection
+            below.
+        </p>
+    </div>
+}
+
+@Html.Partial("Shared/_AddEditConnection", Model)

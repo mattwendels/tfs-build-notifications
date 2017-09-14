@@ -1,0 +1,76 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<Tfs.BuildNotifications.Web.ViewModels.AddBuildsViewModel>
+
+@{ 
+    ViewBag.Title = "Add Builds";
+    Layout = "Views/Shared/_Layout.cshtml";
+}
+
+<p class="go-back"><a href="javascript:void(0)" onclick="window.history.go(-1)">Go back</a></p>
+
+<h2>Add Builds</h2>
+
+<h3><strong>@Model.Project.Name (@Model.Connection.TfsServerUrl)</strong></h3>
+
+@if (!Model.BuildSelections.Any())
+{
+    <div class="info-box">
+        <p>No build definitions found (or visible) for the current project.</p>
+    </div>
+}
+else
+{
+    var count = 0;
+
+    <p>Select one or more builds to enable notifications for.</p>
+
+    <div class="select-deselect">
+        <p>
+            <a id="selectAll" href="javascipt:void(0)">Select all</a>
+            &nbsp;&nbsp;|&nbsp;&nbsp;
+            <a id="deselectAll" href="javascipt:void(0)">Deselect all</a>
+        </p>
+    </div>
+
+    <form action="/addbuilds" method="post">
+
+        <input type="hidden" name="ConnectionId" value="@Model.Connection.Id" />
+        <input type="hidden" name="ProjectId" value="@Model.Project.Id" />
+
+        <div class="selection-list">
+            @foreach (var item in Model.BuildSelections)
+            {
+                <div class="select-selection">
+                    <input type="hidden" name="Id[@count]" value="@item.Id" />
+                    <input type="hidden" name="Name[@count]" value="@item.Name" />
+                    <input type="checkbox" id="Selected_@count" name="Selected[@count]" @if (item.Disabled) { <text>disabled="disabled"</text> } />
+
+                    <label for="Selected_@count" @if (item.Disabled) { <text>class="selection-disabled"</text> }>
+                        @item.Name
+                        @if (item.Disabled)
+                        {
+                            <text>(already monitored)</text>
+                        }
+                    </label>
+                </div>
+                
+                count++;
+            }
+        </div>
+
+        <input id="buildsSelect" type="submit" class="button" value="Continue" />
+    </form>
+
+    <script type="text/javascript">
+
+        var selectableItems = $('.selection-list').find('input[type="checkbox"]:not(:disabled)');
+
+        $('#selectAll').click(function () {
+            selectableItems.prop('checked', true);
+        });
+
+        $('#deselectAll').click(function () {
+            selectableItems.prop('checked', false);
+        });
+
+    </script>
+}

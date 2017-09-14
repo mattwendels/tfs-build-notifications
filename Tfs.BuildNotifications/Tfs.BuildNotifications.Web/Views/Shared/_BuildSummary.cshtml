@@ -1,0 +1,43 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<Tfs.BuildNotifications.Web.ViewModels.SingleBuildDefinitionViewModel>
+
+<div class="build-summary" data-local-id="@Model.BuildDefinition.LocalId"
+    data-connection-id="@Model.Connection.Id"
+    data-project-id="@Model.Project.Id">
+    <p>
+        <span class="status-image"><img src="~/Content/Images/@Model.BuildDefinition.StatusImageFileName" /></span>
+        <a title="@Model.BuildDefinition.Name" href="@Model.BuildDefinition.Url" target="_blank">@Model.BuildDefinition.ShortName</a>
+    </p>
+
+    <a href="javascript:void(0)" class="removeBuild" data-local-id="@Model.BuildDefinition.LocalId" title="Delete">
+        <img src="~/Content/Images/delete.png" />
+    </a>
+
+    <div class="build-info">
+        @if (!Model.BuildDefinition.Builds.Any())
+        {
+            <p>No builds available for this definition.</p>
+        }
+        else
+        {
+            if (Model.BuildDefinition.IsRunning)
+            {
+                <p><strong>Requested by:</strong> @Model.BuildDefinition.LastRequestedBy</p>
+                <p><strong>Started at:</strong> @Model.BuildDefinition.LastStarted</p>
+            }
+            else
+            {
+                <p><strong>Last requested by:</strong> @Model.BuildDefinition.LastRequestedBy</p>
+                <p><strong>Last completed:</strong> @Model.BuildDefinition.LastFinished</p>
+            }
+
+            <div class="build-history">
+                @foreach (var build in Model.BuildDefinition.Builds.Take(6))
+                {
+                    <a target="_blank" href="@build.Url" title="@("Status: " + build.Result.ToBuildResult().ToString() + ". Finished at " + (build.LastFinished == null ? "N/A" : build.LastFinished.ToString()))">
+                        <span class="@Model.GetHistoryCssClassName(build)"></span>
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</div>

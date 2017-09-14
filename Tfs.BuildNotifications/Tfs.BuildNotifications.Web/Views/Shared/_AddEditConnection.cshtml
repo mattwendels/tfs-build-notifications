@@ -1,0 +1,105 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<Tfs.BuildNotifications.Web.ViewModels.AddEditConnectionViewModel>
+
+<div class="new-connection">
+
+    @if (Model.Errors.Any())
+    {
+        <div class="field-validation-error">
+
+            @foreach (string error in Model.Errors)
+            {
+                <p>@error</p>
+            }
+        </div>
+    }
+
+    <form method="post">
+
+        <div>
+            <label>TFS Server URL: </label>
+            <input type="text" name="TfsServerUrl" value="@Model.TfsServerUrl" />
+
+            <div class="notes">
+                <p>Example - On premises: 'http://mytfsserver:8080/tfs/defaultcollection'.</p>
+                <p>Example - Visual Studio Online: 'https://myname.visualstudio.com/defaultcollection'.</p>
+            </div>
+        </div>
+
+        <div>
+            <label>TFS Server Location:</label>
+            <div class="radio">
+                <input type="radio" id="onPrem" name="TfsServerLocation" value="OnPremises" @if (Model.TfsServerLocation == "OnPremises") { <text> checked="checked" </text>  } />
+
+                <label for="onPrem">On-premises</label>
+
+                <input type="radio" id="onWeb" name="TfsServerLocation" value="OnlineVsts" @if (Model.TfsServerLocation == "OnlineVsts") { <text> checked="checked" </text>  } />
+
+                <label for="onWeb">VSTS (Visual Studio Online)</label>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div id="inputUserName">
+            <label>User name: </label>
+            <input type="text" name="UserName" value="@Model.UserName" />
+
+            <div class="notes">
+                <p>Include domain name e.g. mydomain\username</p>
+            </div>
+
+        </div>
+
+        <div id="inputPassword">
+            <label>Password: </label>
+            <input type="password" name="Password" value="@Model.Password" />
+        </div>
+
+        <div id="inputPat">
+            <label>Personal Access Token: </label>
+            <input type="text" name="PersonalAccessToken" value="@Model.PersonalAccessToken" />
+        </div>
+
+        <input id="tfsConnect" type="submit" class="button" value="Connect" />
+    </form>
+</div>
+
+<script type="text/javascript">
+
+    var userNameInput = $('#inputUserName');
+    var passwordInput = $('#inputPassword');
+    var patInput = $('#inputPat');
+    var connectButton = $('#tfsConnect');
+    var tfsLocation = $('.radio');
+
+    userNameInput.hide();
+    passwordInput.hide();
+    patInput.hide();
+    connectButton.hide();
+
+    tfsLocation.find('input[type="radio"]').change(function () {
+
+        if ($(this).attr('id') == 'onWeb') {
+            patInput.show();
+
+            userNameInput.hide();
+            passwordInput.hide();
+
+        } else {
+            userNameInput.show();
+            passwordInput.show();
+
+            patInput.hide();
+        }
+
+        connectButton.fadeIn();
+
+    });
+</script>
+
+@if (Model.Errors.Any())
+{
+    <script type="text/javascript">
+        tfsLocation.find('input[type="radio"]:checked').change();
+    </script>
+}

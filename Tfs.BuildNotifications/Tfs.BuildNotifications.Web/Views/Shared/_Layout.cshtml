@@ -1,0 +1,31 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>TFS Build Notifications - @ViewBag.Title</title>
+
+    <link rel="stylesheet" type="text/css" href="~/Content/Styles/site.css" />
+    <link rel="shortcut icon" href="~/Content/favicon.ico" />
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <div class="container header">
+        <img class="header-logo" src="~/Content/Images/tfs-logo.png" />
+        <h1>Team Foundation Server Build Notifications</h1>
+    </div>
+
+    <div class="container">
+        <div class="content">
+            @RenderBody()
+        </div>
+    </div>
+    
+</body>
+</html>
