@@ -43,7 +43,7 @@ namespace Tfs.BuildNotifications.Tray
             var buildConfigService = container.Resolve<IBuildConfigurationService>();
             var tray = container.Resolve<ITrayIconApplicationContext>();
             
-            buildConfigService.TestAllConnections();
+            buildConfigService.Init();
 
             pollingService.OnBuildPollComplete += tray.UpdateTrayStatus;
             pollingService.OnBuildStatusChange += dashboardWebsite.UpdateDashboardBuildStatus;

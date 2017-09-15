@@ -144,7 +144,8 @@ namespace Tfs.BuildNotifications.Core.Clients
                     Result = apiBuild.Result,
                     StartTime = apiBuild.StartTime,
                     Status = apiBuild.Status,
-                    Url = apiBuild.Links.Web.Url
+                    Url = apiBuild.Links.Web.Url,
+                    BuildRunId = apiBuild.BuildRunId
                 });
             }
 

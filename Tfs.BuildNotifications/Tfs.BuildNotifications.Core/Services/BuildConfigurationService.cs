@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using Tfs.BuildNotifications.Common.Encryption;
+using Tfs.BuildNotifications.Common.Helpers.Interfaces;
 using Tfs.BuildNotifications.Core.Clients.Interfaces;
 using Tfs.BuildNotifications.Core.Exceptions;
 using Tfs.BuildNotifications.Core.Services.Interfaces;
@@ -13,12 +16,16 @@ namespace Tfs.BuildNotifications.Core.Services
     public class BuildConfigurationService : IBuildConfigurationService
     {
         private const string ConfigFileName = "builds-config.json";
+        private const string EncryptionKeyRegistrySubKey = @"Software\TFSBuildNotifications\Data";
+        private const string EncryptionKeyName = "EncKey";
 
         private readonly ITfsApiClient _tfsApiClient;
+        private readonly IRegistryHelper _registryHelper;
 
-        public BuildConfigurationService(ITfsApiClient tfsApiClient)
+        public BuildConfigurationService(ITfsApiClient tfsApiClient, IRegistryHelper registryHelper)
         {
             _tfsApiClient = tfsApiClient;
+            _registryHelper = registryHelper;
         }
 
         public BuildConfig GetBuildConfig()
@@ -41,8 +48,20 @@ namespace Tfs.BuildNotifications.Core.Services
             return GetConfig().Connections.Any(c => !c.Broken && c.Projects.Any(p => p.BuildDefinitions.Any()));
         }
 
-        public void TestAllConnections()
+        public void Init()
         {
+            // Set key in registry for encrypting passwords saved in config file.
+            if (!_registryHelper.KeyExistsWithValue(EncryptionKeyRegistrySubKey, EncryptionKeyName))
+            {
+                var aesProvider = new AesCryptoServiceProvider();
+
+                aesProvider.KeySize = 256;
+                aesProvider.GenerateKey();
+
+                _registryHelper.SetValue(EncryptionKeyRegistrySubKey, EncryptionKeyName, Convert.ToBase64String(aesProvider.Key));
+            }
+
+            // Test connections.
             var config = GetConfig();
 
             if (config.Connections.Any())
@@ -51,7 +70,7 @@ namespace Tfs.BuildNotifications.Core.Services
                 {
                     try
                     {
-                        _tfsApiClient.TestConnection(connection);
+                        _tfsApiClient.TestConnection(DecryptConnection(connection));
 
                         connection.Broken = false;
                         connection.LastConnectionError = null;
@@ -81,8 +100,8 @@ namespace Tfs.BuildNotifications.Core.Services
 
             var newConnection = new Connection
             {
-                Password = password,
-                PersonalAccessToken = personalAccessToken,
+                Password = EncryptString(password),
+                PersonalAccessToken = EncryptString(personalAccessToken),
                 TfsServerDeployment = deployment,
                 TfsServerUrl = tfsServerUrl,
                 UserName = userName,
@@ -102,8 +121,8 @@ namespace Tfs.BuildNotifications.Core.Services
                 
             ValidateConnection(tfsServerUrl, tfsLocation, userName, password, personalAccessToken, out var deployment);
 
-            connection.Password = password;
-            connection.PersonalAccessToken = personalAccessToken;
+            connection.Password = EncryptString(password);
+            connection.PersonalAccessToken = EncryptString(personalAccessToken);
             connection.TfsServerDeployment = deployment;
             connection.TfsServerUrl = tfsServerUrl;
             connection.UserName = userName;
@@ -177,7 +196,7 @@ namespace Tfs.BuildNotifications.Core.Services
 
         public IEnumerable<Build> GetBuilds(Connection connection, string projectName, int buildDefinitionId)
         {
-            return _tfsApiClient.GetBuilds(connection, projectName, buildDefinitionId);
+            return _tfsApiClient.GetBuilds(DecryptConnection(connection), projectName, buildDefinitionId);
         }
 
         public IEnumerable<Build> GetLastBuildPerDefinition()
@@ -189,7 +208,7 @@ namespace Tfs.BuildNotifications.Core.Services
             {
                 foreach (var project in connection.Projects)
                 {
-                    var lastBuilds = _tfsApiClient.GetLastBuildPerDefinition(connection, project.Name,
+                    var lastBuilds = _tfsApiClient.GetLastBuildPerDefinition(DecryptConnection(connection), project.Name,
                             project.BuildDefinitions.Select(b => b.Id).ToList());
 
                     foreach (var build in lastBuilds)
@@ -292,7 +311,7 @@ namespace Tfs.BuildNotifications.Core.Services
                 throw new InvalidOperationException($"Connection not found '{connectionId}");
             }
 
-            return connection;
+            return DecryptConnection(connection);
         }
 
         private Project GetProject(string projectId, string connectionId, out Connection connection)
@@ -342,6 +361,40 @@ namespace Tfs.BuildNotifications.Core.Services
             {
                 throw new ServiceValidationException($"Unable to connect to the specified TFS server.");
             }
+        }
+
+        private string EncryptString(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return value;
+            }
+
+            var key = _registryHelper.GetValue<string>(EncryptionKeyRegistrySubKey, EncryptionKeyName);
+
+            return EncryptionService.AesEncryptString(key, value);
+        }
+
+        private string DecryptString(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return value;
+            }
+
+            var key = _registryHelper.GetValue<string>(EncryptionKeyRegistrySubKey, EncryptionKeyName);
+
+            return EncryptionService.AesDecryptString(key, value);
+        }
+
+        private Connection DecryptConnection(Connection connection)
+        {
+            var clone = (Connection)connection.Clone();
+
+            clone.Password = DecryptString(clone.Password);
+            clone.PersonalAccessToken = DecryptString(clone.PersonalAccessToken);
+
+            return clone;
         }
 
         #endregion

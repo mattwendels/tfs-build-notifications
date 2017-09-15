@@ -13,7 +13,7 @@ namespace Tfs.BuildNotifications.Model
         public List<Connection> Connections { get; set; }
     }
 
-    public class Connection
+    public class Connection : ICloneable
     {
         public Connection()
         {
@@ -33,6 +33,11 @@ namespace Tfs.BuildNotifications.Model
         public bool Broken { get; set; }
 
         public string LastConnectionError { get; set; }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
     }
 
     public class Project

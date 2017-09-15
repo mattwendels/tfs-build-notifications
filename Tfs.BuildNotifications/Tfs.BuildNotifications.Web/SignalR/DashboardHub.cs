@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.SignalR;
 using Newtonsoft.Json;
 using System.Linq;
+using Tfs.BuildNotifications.Common.Helpers;
 using Tfs.BuildNotifications.Core.Clients;
 using Tfs.BuildNotifications.Core.Services;
 using Tfs.BuildNotifications.Core.Services.Interfaces;
@@ -19,7 +20,8 @@ namespace Tfs.BuildNotifications.Web.SignalR
         public DashboardHub()
         {
             // ToDo: DI
-            _buildConfigurationService = new BuildConfigurationService(new TfsApiClient(LoggingErrorHandler.LogService));
+            _buildConfigurationService = new BuildConfigurationService(new TfsApiClient(LoggingErrorHandler.LogService),
+                new RegistryHelper());
         }
 
         public void NotifyBuildChange(Build build)

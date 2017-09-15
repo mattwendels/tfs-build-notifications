@@ -89,6 +89,8 @@ namespace Tfs.BuildNotifications.Web.ViewModels
 
         public bool RequiresAttention => Status == BuildResult.Failed || Status == BuildResult.Stopped;
 
+        public int LastBuildId => Builds?.FirstOrDefault().BuildRunId ?? 0;
+
         public string StatusImageFileName
         {
             get

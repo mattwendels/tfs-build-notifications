@@ -18,10 +18,9 @@ jQuery.fn.highlight = function () {
 }
 
 var dashboardHubProxy = $.connection.dashboardHub;
+var runningBuildsCount = 0;
 
 var dashboardLib = function (options) {
-
-    var runningBuildsCount = 0;
 
     var init = function () {
 
@@ -38,15 +37,6 @@ var dashboardLib = function (options) {
                 dashboardHubProxy.server.getRunningBuilds($.connection.hub.id);
             })
             .fail(function () { console.log('SignalR failed to connect.'); });
-
-        // On disconnect.
-        $.connection.hub.disconnected(function () {
-            console.log('SignalR disconnected.');
-            setTimeout(function () {
-                alert('SignalR Reconnecting in 5 seconds...')
-                $.connection.hub.start();
-            }, 5000); // Restart connection after 5 seconds.
-        });
 
         function updateUiForBuildChange(data) {
 
@@ -73,7 +63,7 @@ var dashboardLib = function (options) {
                     // Add to 'Running Now' section.
                     if (buildNotification.InProgress) {
 
-                        if (!buildAlreadyMarkedAsRunning($(data))) {
+                        if (!buildAlreadyMarkedAsRunning(buildNotification)) {
 
                             runningBuildsCount++;
 
@@ -96,26 +86,23 @@ var dashboardLib = function (options) {
 
                         runningBuildsCount--;
 
-                        console.log('Build completed. Local definition ID: ' + buildNotification.DefinitionLocalId);
-
                         // Remove running now panel and replace with updated build result.
-                        var runningBuildPanel = options.buildsRunningContainer.find('[data-local-id="' + buildNotification.DefinitionLocalId + '"]');
-                        var completedBuild = $(data);
+                        var runningBuildPanel = options.buildsRunningContainer
+                            .find('[data-local-id="' + buildNotification.DefinitionLocalId + '"][data-last-run-id="' + buildNotification.BuildRunId + '"]');
 
-                        if (runningBuildPanel.length <= 0) {
-                            console.log('Could not find running build panel for local definition ID:' + buildNotification.DefinitionLocalId);
-                            console.log('Build data:');
-                            console.log(completedBuild);
-                        }
+                        var completedBuild = $(data);
 
                         completedBuild.find(options.removeBuildClass).remove();
 
                         runningBuildPanel.replaceWith(completedBuild);
 
+                        var delayPanelRemove = options.buildsRunningContainer
+                            .find('[data-local-id="' + buildNotification.DefinitionLocalId + '"][data-last-run-id="' + buildNotification.BuildRunId + '"]');
+
                         // Display result for 5 seconds then remove.
                         setTimeout(function () {
 
-                            completedBuild.fadeOut(400, function () {
+                            delayPanelRemove.fadeOut(400, function () {
                                 checkAnyBuildsRunning();
                             });
                         }, 5000);
@@ -135,8 +122,11 @@ var dashboardLib = function (options) {
         }
     };
 
-    var buildAlreadyMarkedAsRunning = function (buildPanel) {
-        return options.buildsRunningContainer.has(buildPanel).length > 0;
+    var buildAlreadyMarkedAsRunning = function (buildNotification) {
+
+        return result = options.buildsRunningContainer
+            .find('*[data-local-id="' + buildNotification.DefinitionLocalId + '"][data-last-run-id="' + buildNotification.BuildRunId + '"]')
+            .length > 0;
     };
 
     init();

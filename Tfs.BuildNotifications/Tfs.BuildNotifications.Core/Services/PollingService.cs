@@ -12,7 +12,7 @@ namespace Tfs.BuildNotifications.Core.Services
         private readonly IBuildConfigurationService _buildConfigurationService;
 
         private Timer _timer;
-        private DateTime _lastNotificationCheckTime = DateTime.Now.AddMinutes(1);
+        private DateTime _lastNotificationCheckTime = DateTime.Now;
 
         public delegate void BuildNotificationEvent(Build build);
         public delegate void BuildPollCompletedEvent(bool hasFailedBuilds);

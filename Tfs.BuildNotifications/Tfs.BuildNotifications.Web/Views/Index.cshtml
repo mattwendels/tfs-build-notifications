@@ -127,7 +127,8 @@ else
                             {
                                 <div class="build-summary" data-local-id="@buildDefinition.LocalId"
                                      data-connection-id="@dashboardConnection.Connection.Id"
-                                     data-project-id="@dashboardProject.Project.Id">
+                                     data-project-id="@dashboardProject.Project.Id"
+                                     data-last-run-id="@buildDefinition.LastBuildId">
                                     <p>
                                         <span class="status-image"><img src="~/Content/Images/@buildDefinition.StatusImageFileName" /></span>
                                         <a title="@buildDefinition.Name" href="@buildDefinition.Url" target="_blank">@buildDefinition.ShortName</a>

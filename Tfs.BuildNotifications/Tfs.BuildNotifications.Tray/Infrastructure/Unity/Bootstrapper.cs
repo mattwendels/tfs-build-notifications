@@ -1,4 +1,6 @@
 ﻿using Microsoft.Practices.Unity;
+using Tfs.BuildNotifications.Common.Helpers;
+using Tfs.BuildNotifications.Common.Helpers.Interfaces;
 using Tfs.BuildNotifications.Common.Telemetry;
 using Tfs.BuildNotifications.Common.Telemetry.Interfaces;
 using Tfs.BuildNotifications.Core.Clients;
@@ -32,6 +34,7 @@ namespace Tfs.BuildNotifications.Tray.Infrastructure.Unity
                 .RegisterType<IPollingService, PollingService>(new InjectionProperty("PollInterval", appConfig.NotificationIntervalMinutes))
                 .RegisterType<IDashboardHub, DashboardHub>()
                 .RegisterType<ILogService, LogService>()
+                .RegisterType<IRegistryHelper, RegistryHelper>()
                 .RegisterType<IWebsiteDashboardService, WebsiteDashboardService>(new InjectionProperty("WebsitePort", appConfig.WebsitePort));
 
             return container;

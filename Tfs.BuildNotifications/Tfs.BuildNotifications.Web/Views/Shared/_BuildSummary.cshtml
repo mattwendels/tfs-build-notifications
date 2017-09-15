@@ -2,7 +2,8 @@
 
 <div class="build-summary" data-local-id="@Model.BuildDefinition.LocalId"
     data-connection-id="@Model.Connection.Id"
-    data-project-id="@Model.Project.Id">
+    data-project-id="@Model.Project.Id"
+    data-last-run-id="@Model.BuildDefinition.LastBuildId">
     <p>
         <span class="status-image"><img src="~/Content/Images/@Model.BuildDefinition.StatusImageFileName" /></span>
         <a title="@Model.BuildDefinition.Name" href="@Model.BuildDefinition.Url" target="_blank">@Model.BuildDefinition.ShortName</a>

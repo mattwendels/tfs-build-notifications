@@ -12,7 +12,7 @@ namespace Tfs.BuildNotifications.Core.Services.Interfaces
 
         BuildConfig GetBuildConfig();
 
-        void TestAllConnections();
+        void Init();
 
         void AddConnection(string tfsServerUrl, string tfsLocation, string userName, string password,
             string personalAccessToken);

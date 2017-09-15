@@ -22,5 +22,7 @@ namespace Tfs.BuildNotifications.Model
         public string DefinitionShortName => DefinitionName?.Shorten(42, "...");
         public string LastFinishedDateString => LastFinished?.ToString();
         public string StartTimeDateString => StartTime?.ToString();
+
+        public int BuildRunId { get; set; }
     }
 }

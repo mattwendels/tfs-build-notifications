@@ -18,6 +18,9 @@ namespace Tfs.BuildNotifications.Core.Clients.DTOs
 
     public class BuildApiResponse
     {
+        [DeserializeAs(Name = "id")]
+        public int BuildRunId { get; set; }
+
         [DeserializeAs(Name = "status")]
         public string Status { get; set; }
 
