@@ -23,6 +23,10 @@ Build changes are polled at a configurable interval and display tray notificatio
 
 ![Build succeeded](/docs/images/build-passed.png)
 
+### Application
+
+.Net 4.5 Windows Forms application using Owin, Nancy and SignalR to self host and run the website dashboard.
+
 #### Installer
 
-Coming soon! For now, clone the repo and compile the Tfs.Build.Notifications.Tray application to run.
+Coming soon! For now, clone the repo and compile the Tfs.Build.Notifications.Tray project to run.
