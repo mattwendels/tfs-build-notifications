@@ -7,7 +7,7 @@ A Windows Forms application which provides notifications for TFS builds. Include
 
 ### Dashboard
 
-The website dashboard gives a detailed overview of your monitored build definitions across multiple connections (via on premises TFS installations and/or Visual Studio Online). Real time updates are applied to the dashboard when the status of a monitored build changes.
+The website dashboard gives a detailed overview of your monitored build definitions across multiple connections (via on-premises TFS installations and/or Visual Studio Online). Real time updates are applied to the dashboard when the status of a monitored build changes.
 
 A recent build history is displayed underneath each build definition.
 
