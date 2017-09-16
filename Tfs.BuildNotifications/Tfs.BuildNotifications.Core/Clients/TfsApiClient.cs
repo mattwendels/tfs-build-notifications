@@ -14,6 +14,9 @@ namespace Tfs.BuildNotifications.Core.Clients
 {
     public class TfsApiClient : ITfsApiClient
     {
+        private const string _buildsApiVersion = "2.0";
+        private const string _defaultApiVersion = "1.0";
+
         private readonly ILogService _logService;
 
         public TfsApiClient(ILogService logService)
@@ -38,17 +41,17 @@ namespace Tfs.BuildNotifications.Core.Clients
 
         public void TestConnection(Connection connection)
         {
-            this.DoApiRequest<List<Project>>(connection, "_apis/projects");
+            this.DoApiRequest<List<Project>>(connection, $"_apis/projects?api-version={_defaultApiVersion}");
         }
 
         public IEnumerable<Project> GetProjects(Connection connection)
         {
-            return this.DoApiRequest<ProjectListApiResponse>(connection, "_apis/projects").Projects;
+            return this.DoApiRequest<ProjectListApiResponse>(connection, $"_apis/projects?api-version={_defaultApiVersion}").Projects;
         }
 
         public IEnumerable<BuildDefinition> GetBuildDefinitions(Connection connection, string projectName)
         {
-            var result = this.DoApiRequest<BuildDefinitionApiResponseWrapper>(connection, $"{projectName}/_apis/build/definitions")
+            var result = this.DoApiRequest<BuildDefinitionApiResponseWrapper>(connection, $"{projectName}/_apis/build/definitions?api-version={_buildsApiVersion}")
                 .BuildDefinitions.OrderBy(b => b.Name);
 
             var buildDefinitions = new List<BuildDefinition>();
@@ -68,9 +71,8 @@ namespace Tfs.BuildNotifications.Core.Clients
 
         public List<Build> GetBuilds(Connection connection, string projectName, int buildDefinitionId)
         {
-            // ToDo: adjustable limit.
             var apiBuildResult = this.DoApiRequest<BuildApiResponseWrapper>(connection,
-                $"{projectName}/_apis/build/builds?definitions={buildDefinitionId}&$top=10");
+                $"{projectName}/_apis/build/builds?api-version={_buildsApiVersion}&definitions={buildDefinitionId}&$top=10");
 
             return ConvertToBuildModel(apiBuildResult);
         }
@@ -78,7 +80,7 @@ namespace Tfs.BuildNotifications.Core.Clients
         public List<Build> GetLastBuildPerDefinition(Connection connection, string projectName, List<int> buildDefinitionIds)
         {
             var apiBuildResult = this.DoApiRequest<BuildApiResponseWrapper>(connection,
-                $"{projectName}/_apis/build/builds?definitions={string.Join(",", buildDefinitionIds)}&maxBuildsPerDefinition=1");
+                $"{projectName}/_apis/build/builds?api-version={_buildsApiVersion}&definitions={string.Join(",", buildDefinitionIds)}&maxBuildsPerDefinition=1");
 
             return ConvertToBuildModel(apiBuildResult);
         }
