@@ -94,6 +94,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Nancy\Configuration\NancyCustomBootstrapper.cs" />
     <Compile Include="Nancy\Configuration\NancyRazorConfiguration.cs" />
     <Compile Include="Nancy\Handlers\PageNotFoundHandler.cs" />
     <Compile Include="Nancy\Handlers\ServerErrorHandler.cs" />
