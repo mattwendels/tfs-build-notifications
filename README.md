@@ -4,3 +4,25 @@ A notification and alert system for Microsoft Team Foundation Server builds.
 ## Overview
 
 A Windows Forms application which provides tray (tool tip and Windows 8/10 Toast) notifications for TFS builds. Includes a website dashboard that allows you track the status of build definitions across multiple TFS connections and projects.
+
+### Dashboard
+
+The website dashboard gives a detailed overview of your monitored build definitions across multiple connections (via on premises TFS installations and/or Visual Studio Online). Real time updates are applied to the dashboard when the status of a monitored build changes.
+
+A recent build history is displayed underneath each build definition.
+
+![Website dashboard](/docs/images/dashboard-example.png)
+
+### Notifications
+
+Build changes are polled at a configurable interval and display tray notifications (tooltip or Toast notifications in Windows 8 onwards) when a build starts, stops, fails or succeeds. If required, the application can be also configured to only display a notification if a build fails.
+
+![Build started](/docs/images/build-started.png)
+
+![Build failed](/docs/images/build-failed.png)
+
+![Build succeeded](/docs/images/build-passed.png)
+
+#### Installer
+
+Coming soon! For now, clone the repo and compile the Tfs.Build.Notifications.Tray application to run.
