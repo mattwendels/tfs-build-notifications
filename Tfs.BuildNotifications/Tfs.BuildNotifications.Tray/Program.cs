@@ -36,8 +36,9 @@ namespace Tfs.BuildNotifications.Tray
             var container = new Bootstrapper().Bootstrap();
 
             _logService = container.Resolve<ILogService>();
+			_logService.Log("Application Started");
 
-            var pollingService = container.Resolve<IPollingService>();
+			var pollingService = container.Resolve<IPollingService>();
             var dashboardWebsite = container.Resolve<IWebsiteDashboardService>();
             var notificationService = container.Resolve<INotificationService>();
             var buildConfigService = container.Resolve<IBuildConfigurationService>();
