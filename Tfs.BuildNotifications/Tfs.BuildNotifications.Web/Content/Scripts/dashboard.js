@@ -119,6 +119,11 @@ var dashboardLib = function (options) {
         }
         else {
             options.noBuildsRunningMessage.show();
+
+            // Running build panel out of sync, refresh the page.
+            if (options.buildsRunningContainer.find('[data-build-running="true"]').length > 0) {
+                window.location.reload();
+            }
         }
     };
 
