@@ -58,12 +58,16 @@ namespace Tfs.BuildNotifications.Core.Clients
 
             foreach (var item in result)
             {
-                buildDefinitions.Add(new BuildDefinition
-                {
-                    Id = item.Id,
-                    Name = item.Name,
-                    Url = item.Links.Web.Url
-                });
+				// XAML builds have no links collection. These are ignored (and are marked for deprecation in TFS anyway).
+				if (item.Links != null)
+				{
+					buildDefinitions.Add(new BuildDefinition
+					{
+						Id = item.Id,
+						Name = item.Name,
+						Url = item.Links.Web.Url
+					});
+				}
             }
 
             return buildDefinitions;
