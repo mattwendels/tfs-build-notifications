@@ -52,7 +52,7 @@ namespace Tfs.BuildNotifications.Tray
 
             dashboardWebsite.StartWebsite();
 
-            Application.Run((ApplicationContext)tray);
+			Application.Run((ApplicationContext)tray);
         }
 
         #region Private Methods

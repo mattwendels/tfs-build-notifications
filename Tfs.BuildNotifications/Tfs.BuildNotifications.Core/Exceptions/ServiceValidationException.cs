@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Tfs.BuildNotifications.Core.Exceptions
 {
@@ -24,5 +25,21 @@ namespace Tfs.BuildNotifications.Core.Exceptions
         {
             OriginalException = e;
         }
-    }
+
+		public override string Message => ToString();
+
+		public override string ToString()
+		{
+			var s = new StringBuilder("ServiceValidationException: ");
+
+			foreach (var error in ServiceErrors)
+			{
+				s.Append($"Error: {error}. ");
+			}
+
+			s.Append($"Original exception: {OriginalException?.ToString() ?? "<null>"}");
+
+			return s.ToString();
+		}
+	}
 }

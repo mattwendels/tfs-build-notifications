@@ -1,4 +1,6 @@
 ﻿using Microsoft.Practices.Unity;
+using Microsoft.Win32;
+using System;
 using Tfs.BuildNotifications.Common.Helpers;
 using Tfs.BuildNotifications.Common.Helpers.Interfaces;
 using Tfs.BuildNotifications.Common.Telemetry;
@@ -18,17 +20,27 @@ using Tfs.BuildNotifications.Web.SignalR.Interfaces;
 
 namespace Tfs.BuildNotifications.Tray.Infrastructure.Unity
 {
-    public class Bootstrapper
+	public class Bootstrapper
     {
-        public IUnityContainer Bootstrap()
+		private ILogService _logService = new LogService();
+
+		public IUnityContainer Bootstrap()
         {
-            var container = new UnityContainer();
+			var container = new UnityContainer();
             var appConfig = new AppConfig();
 
-            container
+			if (appConfig.UseToolTipNotifications || !IsWindows10())
+			{
+				container.RegisterType<INotificationService, ToolTipNotificationService>();
+			}
+			else
+			{
+				container.RegisterType<INotificationService, ToastNotificationService>();
+			}
+
+			container
                 .RegisterType<IAppConfig, AppConfig>()
                 .RegisterType<ITrayIconApplicationContext, TrayIconApplicationContext>()
-                .RegisterType<INotificationService, NotificationService>()
                 .RegisterType<ITfsApiClient, TfsApiClient>()
                 .RegisterType<IBuildConfigurationService, BuildConfigurationService>()
                 .RegisterType<IPollingService, PollingService>(new InjectionProperty("PollInterval", appConfig.NotificationIntervalMinutes))
@@ -37,7 +49,30 @@ namespace Tfs.BuildNotifications.Tray.Infrastructure.Unity
                 .RegisterType<IRegistryHelper, RegistryHelper>()
                 .RegisterType<IWebsiteDashboardService, WebsiteDashboardService>(new InjectionProperty("WebsitePort", appConfig.WebsitePort));
 
+
             return container;
         }
-    }
+
+		#region Private Methods
+
+		private bool IsWindows10()
+		{
+			try
+			{
+				var reg = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+
+				var productName = (string)reg.GetValue("ProductName");
+
+				return productName.StartsWith("Windows 10");
+			}
+			catch (Exception e)
+			{
+				_logService.Log("Failed to identify operating system version", e);
+
+				return false;
+			}
+		}
+
+		#endregion
+	}
 }
