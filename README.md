@@ -15,7 +15,7 @@ A recent build history is displayed underneath each build definition.
 
 ### Notifications
 
-Build changes are polled at a configurable interval and display tray notifications (tooltip or Toast notifications in Windows 10) when a build starts, stops, fails or succeeds. If required, the application can be also configured to only display a notification if a build fails.
+Build changes are polled at a configurable interval and display tray notifications via the tooltips (or Toast notifications in Windows 10) when a build starts, stops, fails or succeeds. If required, the application can be also configured to only display a notification if a build fails.
 
 ![Build started](/docs/images/build-started.png)
 
