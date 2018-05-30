@@ -23,6 +23,10 @@ Build changes are polled at a configurable interval and display tray notificatio
 
 ![Build succeeded](/docs/images/build-passed.png)
 
+### Notifications TTS (text to speech)
+
+In addition to the existing notification you can activate a voice output by setting TextToSpeech.Enabled to true in app.config
+
 ### Application
 
 .Net 4.5 Windows Forms application using Owin, Nancy and SignalR to self host and run the website dashboard.
