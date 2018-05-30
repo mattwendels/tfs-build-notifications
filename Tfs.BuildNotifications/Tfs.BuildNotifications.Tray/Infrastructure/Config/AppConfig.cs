@@ -10,6 +10,8 @@ namespace Tfs.BuildNotifications.Tray.Infrastructure.Config
 
         public bool UseToolTipNotifications => Convert.ToBoolean(GetApplicationSetting("ToolTipNotifications.Enabled"));
 
+        public bool UseTextToSpeech => Convert.ToBoolean(GetApplicationSetting("TextToSpeech.Enabled"));
+
         public bool NotifyNonSuccessfulBuildsOnly => 
             Convert.ToBoolean(GetApplicationSetting("TrayNotifications.NonSuccessfulBuildsOnly"));
 
