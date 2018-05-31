@@ -23,7 +23,7 @@ Build changes are polled at a configurable interval and display tray notificatio
 
 ![Build succeeded](/docs/images/build-passed.png)
 
-### Notifications TTS (text to speech)
+### Notification TTS (text to speech)
 
 In addition to the existing notification you can activate a voice output by setting TextToSpeech.Enabled to true in app.config
 
