@@ -25,7 +25,7 @@ Build changes are polled at a configurable interval and display tray notificatio
 
 ### Notification TTS (text to speech)
 
-In addition to the existing notification you can activate a voice output by setting TextToSpeech.Enabled to true in app.config
+In addition to existing notifications you can activate voice output by setting TextToSpeech.Enabled to true in the app.config file.
 
 ### Application
 
