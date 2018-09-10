@@ -10,6 +10,8 @@ namespace Tfs.BuildNotifications.Tray.Infrastructure.Config.Interfaces
 
         bool UseToolTipNotifications { get; }
 
+        bool UseTextToSpeech { get; }
+
         bool NotifyNonSuccessfulBuildsOnly { get; }
     }
 }

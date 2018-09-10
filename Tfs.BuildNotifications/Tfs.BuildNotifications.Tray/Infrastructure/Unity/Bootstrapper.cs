@@ -29,14 +29,19 @@ namespace Tfs.BuildNotifications.Tray.Infrastructure.Unity
 			var container = new UnityContainer();
             var appConfig = new AppConfig();
 
-			if (appConfig.UseToolTipNotifications || !IsWindows10())
-			{
-				container.RegisterType<INotificationService, ToolTipNotificationService>();
-			}
-			else
-			{
-				container.RegisterType<INotificationService, ToastNotificationService>();
-			}
+            if (appConfig.UseToolTipNotifications || !IsWindows10())
+            {
+                container.RegisterType<INotificationService, ToolTipNotificationService>("ToolTip");
+            }
+            else
+            {
+                container.RegisterType<INotificationService, ToastNotificationService>("ToolTip");
+            }
+
+            if (appConfig.UseTextToSpeech)
+            {
+                container.RegisterType<INotificationService, TextToSpeechNotificationService>("TextToSpeech");
+            }
 
 			container
                 .RegisterType<IAppConfig, AppConfig>()

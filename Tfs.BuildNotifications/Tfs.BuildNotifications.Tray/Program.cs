@@ -39,7 +39,7 @@ namespace Tfs.BuildNotifications.Tray
 
             var pollingService = container.Resolve<IPollingService>();
             var dashboardWebsite = container.Resolve<IWebsiteDashboardService>();
-            var notificationService = container.Resolve<INotificationService>();
+            var notificationServices = container.ResolveAll<INotificationService>();
             var buildConfigService = container.Resolve<IBuildConfigurationService>();
             var tray = container.Resolve<ITrayIconApplicationContext>();
             
@@ -47,7 +47,12 @@ namespace Tfs.BuildNotifications.Tray
 
             pollingService.OnBuildPollComplete += tray.UpdateTrayStatus;
             pollingService.OnBuildStatusChange += dashboardWebsite.UpdateDashboardBuildStatus;
-            pollingService.OnBuildStatusChange += notificationService.NotifyBuildChange;
+
+            foreach (var service in notificationServices)
+            {
+                pollingService.OnBuildStatusChange += service.NotifyBuildChange;
+            }
+            
             pollingService.PollBuildNotifications();
 
             dashboardWebsite.StartWebsite();

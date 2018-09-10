@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Forms;
+using Microsoft.Practices.Unity;
 using Tfs.BuildNotifications.Core.Services.Interfaces;
 using Tfs.BuildNotifications.Tray.Infrastructure.Config.Interfaces;
 using Tfs.BuildNotifications.Tray.Properties;
@@ -22,7 +23,7 @@ namespace Tfs.BuildNotifications.Tray
         private readonly IBuildConfigurationService _buildConfigurationService;
         private readonly IAppConfig _appConfig;
 
-        public TrayIconApplicationContext(INotificationService notificationService,
+        public TrayIconApplicationContext([Dependency("ToolTip")]INotificationService notificationService,
             IBuildConfigurationService buildConfigurationService, IAppConfig appConfig) 
         {
             _notificationService = notificationService;
