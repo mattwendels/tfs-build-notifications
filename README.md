@@ -5,6 +5,10 @@ A notification and alert system for Microsoft Team Foundation Server builds.
 
 A Windows Forms application which provides notifications for TFS builds. Includes a website dashboard that allows you track the status of build definitions across multiple TFS connections and projects.
 
+### Download
+
+Download the current version (v1.0) [here](https://github.com/mattwendels/tfs-build-notifications/raw/master/downloads/v1.zip)
+
 ### Dashboard
 
 The website dashboard gives a detailed overview of your monitored build definitions across multiple connections (via on-premises TFS installations and/or Visual Studio Online). Real time updates are applied to the dashboard when the status of a monitored build changes.
@@ -33,4 +37,4 @@ In addition to existing notifications you can activate voice output by setting T
 
 #### Installer
 
-Coming soon! For now, clone the repo and compile the Tfs.Build.Notifications.Tray project to run.
+Coming soon! For now, download the current version (v1.0) [here](https://github.com/mattwendels/tfs-build-notifications/raw/master/downloads/v1.zip) or clone the repo and compile the Tfs.Build.Notifications.Tray project to run.
