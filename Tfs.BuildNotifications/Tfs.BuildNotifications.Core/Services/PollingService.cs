@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Tfs.BuildNotifications.Core.Extensions;
@@ -12,7 +13,7 @@ namespace Tfs.BuildNotifications.Core.Services
         private readonly IBuildConfigurationService _buildConfigurationService;
 
         private Timer _timer;
-        private DateTime _lastNotificationCheckTime = DateTime.Now;
+        private Dictionary<string, Build> _lastSeenBuilds;
 
         public delegate void BuildNotificationEvent(Build build);
         public delegate void BuildPollCompletedEvent(bool hasFailedBuilds);
@@ -42,18 +43,19 @@ namespace Tfs.BuildNotifications.Core.Services
 
             var buildUpdates = _buildConfigurationService.GetLastBuildPerDefinition();
 
-            foreach (var build in buildUpdates)
+            if (_lastSeenBuilds != null)
             {
-                if ((build.InProgress && build.StartTime > _lastNotificationCheckTime) ||
-                    (!build.InProgress && build.LastFinished > _lastNotificationCheckTime))
+                // When polling after the first time we are interested in new builds or where the InProgress value has changed
+                var changedBuilds = buildUpdates.Where(b => !_lastSeenBuilds.ContainsKey(b.Url) || _lastSeenBuilds[b.Url].InProgress != b.InProgress);
+                foreach (var changedBuild in changedBuilds)
                 {
-                    OnBuildStatusChange?.Invoke(build);
+                    OnBuildStatusChange?.Invoke(changedBuild);
+
                 }
             }
+            _lastSeenBuilds = buildUpdates.ToDictionary(b => b.Url);
 
-            OnBuildPollComplete?.Invoke(buildUpdates.Any(b => b.Result.ToBuildResult() == BuildResult.Failed));
-
-            _lastNotificationCheckTime = DateTime.Now;
+            OnBuildPollComplete?.Invoke(buildUpdates.Any(b => b.GetBuildResult() == BuildResult.Failed));
 
             StartTimer(PollInterval);
         }

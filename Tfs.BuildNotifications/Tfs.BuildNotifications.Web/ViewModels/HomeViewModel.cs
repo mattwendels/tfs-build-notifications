@@ -23,7 +23,7 @@ namespace Tfs.BuildNotifications.Web.ViewModels
                 return "history-running";
             }
 
-            switch (build.Result.ToBuildResult())
+            switch (build.GetBuildResult())
             {
                 case BuildResult.Succeeded:
                     return "history-success";
@@ -85,7 +85,7 @@ namespace Tfs.BuildNotifications.Web.ViewModels
 
         public Guid LocalId { get; set; }
 
-        public BuildResult Status => Builds.FirstOrDefault()?.Result.ToBuildResult() ?? BuildResult.Unknown;
+        public BuildResult Status => Builds.FirstOrDefault()?.GetBuildResult() ?? BuildResult.Unknown;
 
         public bool RequiresAttention => Status == BuildResult.Failed || Status == BuildResult.Stopped;
 
