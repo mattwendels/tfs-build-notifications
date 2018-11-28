@@ -4,22 +4,31 @@ namespace Tfs.BuildNotifications.Core.Extensions
 {
     public static class BuildExtensions
     {
-        public static BuildResult ToBuildResult(this string s)
+        public static BuildResult GetBuildResult(this Build build)
         {
-            switch (s?.Trim().ToLower())
+            var buildResult = Model.BuildResult.Unknown;
+
+            switch (build?.Result?.Trim().ToLower())
             {
                 case "succeeded":
-                    return BuildResult.Succeeded;
+                    buildResult = BuildResult.Succeeded;
+                    break;
 
                 case "failed":
-                    return BuildResult.Failed;
+                    buildResult = BuildResult.Failed;
+                    break;
 
                 case "canceled":
-                    return BuildResult.Stopped;
-
-                default:
-                    return BuildResult.Unknown;
+                    buildResult = BuildResult.Stopped;
+                    break;
             }
+
+            if (buildResult == BuildResult.Unknown && build.InProgress)
+            {
+                buildResult = BuildResult.InProgress;
+            }
+
+            return buildResult;
         }
     }
 }

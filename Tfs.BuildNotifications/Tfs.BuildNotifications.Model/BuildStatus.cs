@@ -5,6 +5,7 @@
         Unknown,
         Succeeded,
         Failed,
-        Stopped
+        Stopped,
+        InProgress
     }
 }

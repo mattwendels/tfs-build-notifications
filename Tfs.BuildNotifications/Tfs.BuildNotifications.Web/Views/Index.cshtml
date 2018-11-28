@@ -159,7 +159,7 @@ else
                                             <div class="build-history">
                                                 @foreach (var build in buildDefinition.Builds.Take(6))
                                                 {
-                                                    <a target="_blank" href="@build.Url" title="@("Status: " + build.Result.ToBuildResult().ToString() + ". Finished at " + (build.LastFinished == null ? "N/A" : build.LastFinished.ToString()))">
+                                                    <a target="_blank" href="@build.Url" title="@("Status: " + build.GetBuildResult().ToString() + ". Finished at " + (build.LastFinished == null ? "N/A" : build.LastFinished.ToString()))">
                                                         <span class="@Model.GetHistoryCssClassName(build)"></span>
                                                     </a>
                                                 }

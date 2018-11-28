@@ -31,7 +31,7 @@ namespace Tfs.BuildNotifications.Tray.Services
 		{
 			if (_appConfig.NotifyNonSuccessfulBuildsOnly)
 			{
-				if (build.Result.ToBuildResult() != BuildResult.Succeeded)
+				if (build.GetBuildResult() != BuildResult.Succeeded)
 				{
 					ShowBuildStatusNotification(build);
 				}
@@ -64,7 +64,7 @@ namespace Tfs.BuildNotifications.Tray.Services
 		{
 			if (!build.InProgress)
 			{
-				var result = build.Result.ToBuildResult();
+				var result = build.GetBuildResult();
 
 				Action onClick = () => Process.Start(build.Url);
 
@@ -85,7 +85,12 @@ namespace Tfs.BuildNotifications.Tray.Services
 							BuildCompletedIcon, onClick);
 						break;
 
-					default:
+                    case BuildResult.InProgress:
+                        ShowNotification(build.DefinitionName, $"Build in progress. Requested by {build.LastRequestedBy}",
+                            BuildCompletedIcon, onClick);
+                        break;
+
+                    default:
 						ShowNotification(build.DefinitionName, "Build status unknown. Click for details.",
 							BuildStatusUnknownIcon, onClick);
 						break;
