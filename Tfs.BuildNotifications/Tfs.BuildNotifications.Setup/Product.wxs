@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <?include "variables.wxi"?>
   <Product Id="*"
-	         Name="Tfs Build Notifications"
+	         Name="TFS Build Notifications"
 	         Language="1033"
 	         Version="1.0.0.0"
 	         Manufacturer="https://github.com/mattwendels/tfs-build-notifications"
