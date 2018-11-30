@@ -226,7 +226,7 @@
     <DirectoryRef Id="INSTALLFOLDER">
       <Component Id="Binaries" Guid="BFBA138A-3CB8-4409-9197-123FA1263677">
         <!-- TODO: Insert files, registry keys, and other resources here. -->
-        <File Id='MainExe' Name='TfsBuildNotifications.exe' DiskId='1' Source='$(var.BinariesDir)/TFS Build Notifications.exe' KeyPath='yes'></File>
+        <File Id='MainExe' Name='TFS Build Notifications.exe' DiskId='1' Source='$(var.BinariesDir)/TFS Build Notifications.exe' KeyPath='yes'></File>
         <File Id='MainExeConfig' Name='TfsBuildNotifications.exe.config' DiskId='1' Source='$(var.BinariesDir)/TFS Build Notifications.exe.config' KeyPath='no'></File>
         <File Id='FluentValidation' Name='FluentValidation.dll' DiskId='1' Source='$(var.BinariesDir)/FluentValidation.dll' KeyPath='no'></File>
         <File Id='SignalRCore' Name='Microsoft.AspNet.SignalR.Core.dll' DiskId='1' Source='$(var.BinariesDir)/Microsoft.AspNet.SignalR.Core.dll' KeyPath='no'></File>
