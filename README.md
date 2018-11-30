@@ -7,7 +7,7 @@ A Windows Forms application which provides notifications for TFS builds. Include
 
 ### Download
 
-Download the current version (v1.0) [here](https://github.com/mattwendels/tfs-build-notifications/raw/master/downloads/v1.zip).
+Download the installer for the current version (v1.0) [here](https://github.com/mattwendels/tfs-build-notifications/raw/master/downloads/tfs-build-notifications-setup.msi).
 
 ### Dashboard
 
@@ -37,4 +37,4 @@ In addition to existing notifications you can activate voice output by setting T
 
 #### Installer
 
-Coming soon! For now, download the current version (v1.0) [here](https://github.com/mattwendels/tfs-build-notifications/raw/master/downloads/v1.zip) or clone the repo and compile the Tfs.Build.Notifications.Tray project to run.
+Download the installer for the current version (v1.0) [here](https://github.com/mattwendels/tfs-build-notifications/raw/master/downloads/tfs-build-notifications-setup.msi).
