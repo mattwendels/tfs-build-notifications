@@ -14,6 +14,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tfs.BuildNotifications.Web", "Tfs.BuildNotifications.Web\Tfs.BuildNotifications.Web.csproj", "{4DB8C252-0575-4436-8595-7247C3A667CA}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Tfs.BuildNotifications.Setup", "Tfs.BuildNotifications.Setup\Tfs.BuildNotifications.Setup.wixproj", "{91521B2E-84C7-43AD-A951-5D631F438B2E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4DB8C252-0575-4436-8595-7247C3A667CA} = {4DB8C252-0575-4436-8595-7247C3A667CA}
+		{D121EF9F-AC72-49AE-8BB0-31F0924BFFF5} = {D121EF9F-AC72-49AE-8BB0-31F0924BFFF5}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
