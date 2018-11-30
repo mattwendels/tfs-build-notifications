@@ -48,10 +48,10 @@
   <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
-        <Directory Id="INSTALLFOLDER" Name="Tfs Build Notifications"/>
+        <Directory Id="INSTALLFOLDER" Name="TFS Build Notifications"/>
       </Directory>
       <Directory Id="ProgramMenuFolder">
-        <Directory Id="ApplicationProgramsFolder" Name="Tfs Build Notifications"/>
+        <Directory Id="ApplicationProgramsFolder" Name="TFS Build Notifications"/>
       </Directory>
     </Directory>
   </Fragment>
@@ -71,8 +71,8 @@
     <DirectoryRef Id="ApplicationProgramsFolder">
       <Component Id="ApplicationShortcut" Guid="BFBA138A-3CB8-4409-9197-123FA1263678">
         <Shortcut Id="ApplicationStartMenuShortcut"
-                  Name="Tfs Build Notifications"
-                  Description="Tfs Build Notifications"
+                  Name="TFS Build Notifications"
+                  Description="TFS Build Notifications"
                   Target="[#MainExe]"
                   Icon="mainicon.exe"
                   IconIndex="0"
