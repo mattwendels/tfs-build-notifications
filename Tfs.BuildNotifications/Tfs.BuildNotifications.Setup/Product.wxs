@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?include "variables.wxi"?>
+  <Product Id="*"
+	         Name="Tfs Build Notifications"
+	         Language="1033"
+	         Version="1.0.0.0"
+	         Manufacturer="https://github.com/mattwendels/tfs-build-notifications"
+	         UpgradeCode="2082dc04-ee7d-47cf-b69e-b307e2fd4325">
+    <Package InstallerVersion="200"
+		         Compressed="yes"
+		         InstallScope="perMachine" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="ProductFeature"
+		         Title="Tfs.BuildNotifications.Setup"
+		         Level="1">
+      <ComponentRef Id="Binaries" />
+      <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="RegistryEntries" />
+      <ComponentGroupRef Id="Tfs.BuildNotifications.Web.Content" />
+    </Feature>
+
+    <UI>
+      <UIRef Id="WixUI_InstallDir" />
+      <Publish Dialog="ExitDialog"
+               Control="Finish"
+               Event="DoAction"
+               Value="LaunchApplication">NOT Installed</Publish>
+    </UI>
+
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+
+    <!-- License text -->
+    <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
+
+    <!-- Setup bitmaps -->
+    <WixVariable Id="WixUIDialogBmp" Value="dialog.bmp" />
+    <WixVariable Id="WixUIBannerBmp" Value="banner.bmp" />
+
+    <Property Id="WixShellExecTarget" Value="[#MainExe]" />
+    <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
+
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="Tfs Build Notifications"/>
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="Tfs Build Notifications"/>
+      </Directory>
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    <DirectoryRef Id="TARGETDIR">
+      <Component Id="RegistryEntries" Guid="ACF1F339-29CE-4BEF-B978-C7BC45E4AE30">
+        <RegistryKey Root="HKCU"
+                     Key="Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\TFS Build Notifications">
+          <RegistryValue Type="integer" Name="ShowInActionCenter" Value="1" KeyPath="yes"/>
+        </RegistryKey>
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+
+  <Fragment>
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="BFBA138A-3CB8-4409-9197-123FA1263678">
+        <Shortcut Id="ApplicationStartMenuShortcut"
+                  Name="Tfs Build Notifications"
+                  Description="Tfs Build Notifications"
+                  Target="[#MainExe]"
+                  Icon="mainicon.exe"
+                  IconIndex="0"
+                  WorkingDirectory="INSTALLFOLDER">
+          <Icon Id="mainicon.exe" SourceFile="$(var.IconsDir)/tfs-icon.ico"/>
+          <ShortcutProperty Key="System.AppUserModel.ID" Value="TFS Build Notifications"></ShortcutProperty>
+        </Shortcut>
+        <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\Microsoft\TfsBuildNotifications" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+
+  <Fragment>
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Directory Id="dir4188B2D068FEE8AEDB32CA76F6A5BEBB" Name="Content">
+        <Directory Id="dirE289FBB029797AEBA28C9405A0F32484" Name="Images">
+          <Component Id="cmp8B98454D00DF5A7D1B8050CFA5F74EA3" Guid="CBC42CA7-F8D3-41EF-9D6D-C4A7D3BD47AA">
+            <File Id="fil5594846AF8916E360CB81DF1CCD4DFA7" Source="$(var.WebDir)\Content\Images\delete.png" />
+          </Component>
+          <Component Id="cmpACDF9B0E499B021BEDC27E0AD3E136D0" Guid="9167AB6A-556B-4B78-91D5-91D029C41054">
+            <File Id="fil7B5EE24601D67E5A0D6ECE8B9271B973" Source="$(var.WebDir)\Content\Images\minus.png" />
+          </Component>
+          <Component Id="cmp4EC9D65814BF1C108F625813F683D8A7" Guid="A807F22A-6174-4F82-B0F4-885E460BB0D7">
+            <File Id="filE985358E367746F73BB98CD2F43996EA" Source="$(var.WebDir)\Content\Images\plus.png" />
+          </Component>
+          <Component Id="cmpE6BBA4072CF0A8EC44BF1E86829BA823" Guid="F5CA1E24-EAAD-4161-9431-2637BAE2709B">
+            <File Id="fil7596B5DA4AFB9A9D5BC032B535213AD7" Source="$(var.WebDir)\Content\Images\failed.png" />
+          </Component>
+          <Component Id="cmp6251ECE1FE8A7BF5C333B2031989B3B7" Guid="A16D9479-6D49-4F2C-A99A-9C14C03DCC74">
+            <File Id="filCA557EBE4B68CFC665F36418F8873F2D" Source="$(var.WebDir)\Content\Images\play.png" />
+          </Component>
+          <Component Id="cmpB884D14BF92ACE6D3BF2483E0484E15A" Guid="3C5FB56F-465D-4953-BFA9-D6400F317151">
+            <File Id="filC8454177CDBDCB3585C6216228605494" Source="$(var.WebDir)\Content\Images\stopped.png" />
+          </Component>
+          <Component Id="cmp7107FC488BA04999FDB521A0D39640B2" Guid="7A548AE1-ED7C-4D77-8C88-0B0D4CAE9CFB">
+            <File Id="fil8A77B8B8D2C9EB0F540D423D87DBB4FB" Source="$(var.WebDir)\Content\Images\success.png" />
+          </Component>
+          <Component Id="cmp7A567ECC771BCB9779C1440F0AB06F01" Guid="29540093-5B85-4DAE-B40E-D25170CAC96E">
+            <File Id="fil0217854C3E5D8A4BCDE572F5DA88E445" Source="$(var.WebDir)\Content\Images\tfs-logo.png" />
+          </Component>
+          <Component Id="cmpF671A63CB3F874F7C81D44C62D4A8A40" Guid="DE99B784-6E37-4243-806B-26730F98C213">
+            <File Id="filC37E4C3CC7C3C3E3AE8A9E41594D7D34" Source="$(var.WebDir)\Content\Images\unknown.png" />
+          </Component>
+        </Directory>
+        <Directory Id="dirB18395F541B09BD1ABA36809DB1DA1F3" Name="Scripts">
+          <Component Id="cmpA382B039D2D6918722A6C3D23378C4D2" Guid="1948D62D-52FB-40CE-8DF9-13C08BD42FF8">
+            <File Id="fil27BAD01C4C11E1F882424BB4A5B77B5C" Source="$(var.WebDir)\Content\Scripts\dashboard.js" />
+          </Component>
+          <Component Id="cmpABD97412A9B6EED840651F57F4EF8553" Guid="4F3C1B66-4EF8-4146-9E59-6CD14ECB8489">
+            <File Id="filFA801E3A8E682A7FD011BF564619553A" Source="$(var.WebDir)\Content\Scripts\jquery.signalR-2.2.1.js" />
+          </Component>
+        </Directory>
+        <Directory Id="dir1B20882CE0775964ECCC33FD3D34FA37" Name="Styles">
+          <Component Id="cmpE080D81C4C9C2A86723192BA63EF8DC3" Guid="0B9586F3-DF14-42DE-94D8-D440590BF803">
+            <File Id="filD9F1735E84232DF5CB3E4A0EE23E5F6B" Source="$(var.WebDir)\Content\Styles\site.css" />
+          </Component>
+        </Directory>
+      </Directory>
+      <Directory Id="dir090DC64620C7D1C13C77683C02ECE266" Name="Views">
+        <Component Id="cmp12CD69822B375565A03CE1B435850CAC" Guid="298B73AA-82F8-4E6B-AA4D-F4356CF0F3CA">
+          <File Id="filCB5F797AEE90F689F0B3BBED2E66CE4F" Source="$(var.WebDir)\Views\AddBuilds.cshtml" />
+        </Component>
+        <Component Id="cmpBD9E543644E257F6B2F4AF5FA2F5F170" Guid="EF39FAAF-5F19-4C18-B06C-3037ACD096D3">
+          <File Id="fil7F3E50FB31EDDD9B692BC3C28D01C092" Source="$(var.WebDir)\Views\AddConnection.cshtml" />
+        </Component>
+        <Component Id="cmp3868312C990CA1D07C8C4CBC65A04D11" Guid="D2A1A949-1C06-4995-A111-36179A34E04D">
+          <File Id="filA17410276C7180CB12A5969472A79643" Source="$(var.WebDir)\Views\AddProject.cshtml" />
+        </Component>
+        <Component Id="cmpCF1B68A4F0D624B2D4A07ADBF50EDC91" Guid="6BE7F25C-FA2F-482B-9ADB-5DD04B36FF76">
+          <File Id="fil0ADA1E25FFA344D6BEFDC61D48B1B9CA" Source="$(var.WebDir)\Views\Configure.cshtml" />
+        </Component>
+        <Component Id="cmpAD21ECB906369934787AEB9D1A8EEB57" Guid="27E78D20-2383-43A0-B90B-D02127A49290">
+          <File Id="filA813F3ECE95C02FA7FACC58674F63B71" Source="$(var.WebDir)\Views\Error.cshtml" />
+        </Component>
+        <Component Id="cmpA4B7475C25260919E568C3B8ACDBE53C" Guid="9120091B-4425-40F4-B08F-12FB079929C1">
+          <File Id="fil9D3179B1A13FE75CEFE1985823F07CE2" Source="$(var.WebDir)\Views\Index.cshtml" />
+        </Component>
+        <Component Id="cmp36D21B5DE1E5676B99952CC404C16AD2" Guid="911838ED-3B6A-49E1-9EC3-66428BD11BE1">
+          <File Id="fil31CADD4CDF77CADE88F05569B1FD9A34" Source="$(var.WebDir)\Views\NotFound.cshtml" />
+        </Component>
+        <Component Id="cmp7D84DA5CEDB0874435627AD1C80D9CE2" Guid="AABEB7FA-9E28-4FFD-B207-43E84C679744">
+          <File Id="fil350B5513DDDB6F41AF19B07A5B7ECA27" Source="$(var.WebDir)\Views\EditConnection.cshtml" />
+        </Component>
+        <Directory Id="dirA280F108A318F93D41EF68D7EB606721" Name="Shared">
+          <Component Id="cmpC44DEC67F854EF769E7C7D546D631BA3" Guid="6857D3CA-73D5-4F25-B1B4-77058B206C8D">
+            <File Id="fil8ED30FA8B10A745BE26BA3D6C9AD2DE2" Source="$(var.WebDir)\Views\Shared\_BuildSummary.cshtml" />
+          </Component>
+          <Component Id="cmp6537FA091EABE008365D41AC2C71F1ED" Guid="F0D6B971-DDAF-4401-9B30-7CA92B8F94BE">
+            <File Id="filEDC56ABED98C036737AF8E52712368FC" Source="$(var.WebDir)\Views\Shared\_Layout.cshtml" />
+          </Component>
+          <Component Id="cmp0CDE30FE0EA5D0B6B9DC3CD1CC554FCC" Guid="AD65074F-FEC8-4102-9C26-C3C60B5F9BE4">
+            <File Id="fil08D0106F30121D8BCA9BA65D8F6C5E5F" Source="$(var.WebDir)\Views\Shared\_AddEditConnection.cshtml" />
+          </Component>
+        </Directory>
+      </Directory>
+      <Directory Id="dir0E7DB5CAA233389081E0A1FE47696D73" Name="Scripts">
+        <Component Id="cmp1D9F6983E548B351546E513A514CB984" Guid="DB4AAA2F-3EEE-4ACA-A728-1CF01299B796">
+          <File Id="fil469371043195EB4AB6262969952A9463" Source="$(var.WebDir)\Scripts\jquery-1.6.4-vsdoc.js" />
+        </Component>
+        <Component Id="cmp4C8F5E14D04F0041C8F0EC4CE99A32FD" Guid="2ABFB930-E1A8-405D-B3EB-C3571D55173C">
+          <File Id="fil57B6C2F2148433F781668ADDA0892EF8" Source="$(var.WebDir)\Scripts\jquery-1.6.4.js" />
+        </Component>
+        <Component Id="cmpFA7E1330DAE63F8A5A6EE2E9995DD958" Guid="E6D9F929-287E-4089-8EB4-6EA51B82BBC8">
+          <File Id="filB76F76E949344CD6FC6B1538E3DD7021" Source="$(var.WebDir)\Scripts\jquery-1.6.4.min.js" />
+        </Component>
+        <Component Id="cmp4FCF52317FA21E0F4B6C950ED574108D" Guid="FF6FB4B7-8FCC-4787-A478-52982626A785">
+          <File Id="fil2AC38D425990C96169A7275F20685514" Source="$(var.WebDir)\Scripts\jquery.signalR-2.2.2.js" />
+        </Component>
+        <Component Id="cmp84EF926D38C0D75720A1993BBEF38B6B" Guid="598C7918-C797-42EB-9B9E-5AABF1A98E3A">
+          <File Id="fil578E2F4447A0D5E04671A3A11BC727C7" Source="$(var.WebDir)\Scripts\jquery.signalR-2.2.2.min.js" />
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="Tfs.BuildNotifications.Web.Content">
+      <ComponentRef Id="cmp8B98454D00DF5A7D1B8050CFA5F74EA3" />
+      <ComponentRef Id="cmpACDF9B0E499B021BEDC27E0AD3E136D0" />
+      <ComponentRef Id="cmp4EC9D65814BF1C108F625813F683D8A7" />
+      <ComponentRef Id="cmpE6BBA4072CF0A8EC44BF1E86829BA823" />
+      <ComponentRef Id="cmp6251ECE1FE8A7BF5C333B2031989B3B7" />
+      <ComponentRef Id="cmpB884D14BF92ACE6D3BF2483E0484E15A" />
+      <ComponentRef Id="cmp7107FC488BA04999FDB521A0D39640B2" />
+      <ComponentRef Id="cmp7A567ECC771BCB9779C1440F0AB06F01" />
+      <ComponentRef Id="cmpF671A63CB3F874F7C81D44C62D4A8A40" />
+      <ComponentRef Id="cmpA382B039D2D6918722A6C3D23378C4D2" />
+      <ComponentRef Id="cmpABD97412A9B6EED840651F57F4EF8553" />
+      <ComponentRef Id="cmpE080D81C4C9C2A86723192BA63EF8DC3" />
+      <ComponentRef Id="cmp12CD69822B375565A03CE1B435850CAC" />
+      <ComponentRef Id="cmpBD9E543644E257F6B2F4AF5FA2F5F170" />
+      <ComponentRef Id="cmp3868312C990CA1D07C8C4CBC65A04D11" />
+      <ComponentRef Id="cmpCF1B68A4F0D624B2D4A07ADBF50EDC91" />
+      <ComponentRef Id="cmpAD21ECB906369934787AEB9D1A8EEB57" />
+      <ComponentRef Id="cmpA4B7475C25260919E568C3B8ACDBE53C" />
+      <ComponentRef Id="cmp36D21B5DE1E5676B99952CC404C16AD2" />
+      <ComponentRef Id="cmp7D84DA5CEDB0874435627AD1C80D9CE2" />
+      <ComponentRef Id="cmpC44DEC67F854EF769E7C7D546D631BA3" />
+      <ComponentRef Id="cmp6537FA091EABE008365D41AC2C71F1ED" />
+      <ComponentRef Id="cmp0CDE30FE0EA5D0B6B9DC3CD1CC554FCC" />
+      <ComponentRef Id="cmp1D9F6983E548B351546E513A514CB984" />
+      <ComponentRef Id="cmp4C8F5E14D04F0041C8F0EC4CE99A32FD" />
+      <ComponentRef Id="cmpFA7E1330DAE63F8A5A6EE2E9995DD958" />
+      <ComponentRef Id="cmp4FCF52317FA21E0F4B6C950ED574108D" />
+      <ComponentRef Id="cmp84EF926D38C0D75720A1993BBEF38B6B" />
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="Binaries" Guid="BFBA138A-3CB8-4409-9197-123FA1263677">
+        <!-- TODO: Insert files, registry keys, and other resources here. -->
+        <File Id='MainExe' Name='TfsBuildNotifications.exe' DiskId='1' Source='$(var.BinariesDir)/TFS Build Notifications.exe' KeyPath='yes'></File>
+        <File Id='MainExeConfig' Name='TfsBuildNotifications.exe.config' DiskId='1' Source='$(var.BinariesDir)/TFS Build Notifications.exe.config' KeyPath='no'></File>
+        <File Id='FluentValidation' Name='FluentValidation.dll' DiskId='1' Source='$(var.BinariesDir)/FluentValidation.dll' KeyPath='no'></File>
+        <File Id='SignalRCore' Name='Microsoft.AspNet.SignalR.Core.dll' DiskId='1' Source='$(var.BinariesDir)/Microsoft.AspNet.SignalR.Core.dll' KeyPath='no'></File>
+        <File Id='MicrosoftOwinCors' Name='Microsoft.Owin.Cors.dll' DiskId='1' Source='$(var.BinariesDir)/Microsoft.Owin.Cors.dll' KeyPath='no'></File>
+        <File Id='MicrosoftOwin' Name='Microsoft.Owin.dll' DiskId='1' Source='$(var.BinariesDir)/Microsoft.Owin.dll' KeyPath='no'></File>
+        <File Id='MicrosoftOwinHostHttpListener' Name='Microsoft.Owin.Host.HttpListener.dll' DiskId='1' Source='$(var.BinariesDir)/Microsoft.Owin.Host.HttpListener.dll' KeyPath='no'></File>
+        <File Id='MicrosoftOwinHosting' Name='Microsoft.Owin.Hosting.dll' DiskId='1' Source='$(var.BinariesDir)/Microsoft.Owin.Hosting.dll' KeyPath='no'></File>
+        <File Id='MicrosoftOwinSecurity' Name='Microsoft.Owin.Security.dll' DiskId='1' Source='$(var.BinariesDir)/Microsoft.Owin.Security.dll' KeyPath='no'></File>
+        <File Id='MicrosoftPracticesServiceLocation' Name='Microsoft.Practices.ServiceLocation.dll' DiskId='1' Source='$(var.BinariesDir)/Microsoft.Practices.ServiceLocation.dll' KeyPath='no'></File>
+        <File Id='MicrosoftPracticesUnityConfiguration' Name='Microsoft.Practices.Unity.Configuration.dll' DiskId='1' Source='$(var.BinariesDir)/Microsoft.Practices.Unity.Configuration.dll' KeyPath='no'></File>
+        <File Id='MicrosoftPracticesUnity' Name='Microsoft.Practices.Unity.dll' DiskId='1' Source='$(var.BinariesDir)/Microsoft.Practices.Unity.dll' KeyPath='no'></File>
+        <File Id='MicrosoftPracticesUnityRegistrationByConvention' Name='Microsoft.Practices.Unity.RegistrationByConvention.dll' DiskId='1' Source='$(var.BinariesDir)/Microsoft.Practices.Unity.RegistrationByConvention.dll' KeyPath='no'></File>
+        <File Id='Nancy' Name='Nancy.dll' DiskId='1' Source='$(var.BinariesDir)/Nancy.dll' KeyPath='no'></File>
+        <File Id='NancyOwin' Name='Nancy.Owin.dll' DiskId='1' Source='$(var.BinariesDir)/Nancy.Owin.dll' KeyPath='no'></File>
+        <File Id='NancyValidationFluentValidation' Name='Nancy.Validation.FluentValidation.dll' DiskId='1' Source='$(var.BinariesDir)/Nancy.Validation.FluentValidation.dll' KeyPath='no'></File>
+        <File Id='NancyViewEnginesRazor' Name='Nancy.ViewEngines.Razor.dll' DiskId='1' Source='$(var.BinariesDir)/Nancy.ViewEngines.Razor.dll' KeyPath='no'></File>
+        <File Id='NAudio' Name='NAudio.dll' DiskId='1' Source='$(var.BinariesDir)/NAudio.dll' KeyPath='no'></File>
+        <File Id='NewtonsoftJson' Name='Newtonsoft.Json.dll' DiskId='1' Source='$(var.BinariesDir)/Newtonsoft.Json.dll' KeyPath='no'></File>
+        <File Id='Owin' Name='Owin.dll' DiskId='1' Source='$(var.BinariesDir)/Owin.dll' KeyPath='no'></File>
+        <File Id='RestSharp' Name='RestSharp.dll' DiskId='1' Source='$(var.BinariesDir)/RestSharp.dll' KeyPath='no'></File>
+        <File Id='SystemValueTuple' Name='System.ValueTuple.dll' DiskId='1' Source='$(var.BinariesDir)/System.ValueTuple.dll' KeyPath='no'></File>
+        <File Id='SystemWebCors' Name='System.Web.Cors.dll' DiskId='1' Source='$(var.BinariesDir)/System.Web.Cors.dll' KeyPath='no'></File>
+        <File Id='SystemWebRazor' Name='System.Web.Razor.dll' DiskId='1' Source='$(var.BinariesDir)/System.Web.Razor.dll' KeyPath='no'></File>
+        <File Id='TfsBuildNotificationsCommon' Name='Tfs.BuildNotifications.Common.dll' DiskId='1' Source='$(var.BinariesDir)/Tfs.BuildNotifications.Common.dll' KeyPath='no'></File>
+        <File Id='TfsBuildNotificationsCore' Name='Tfs.BuildNotifications.Core.dll' DiskId='1' Source='$(var.BinariesDir)/Tfs.BuildNotifications.Core.dll' KeyPath='no'></File>
+        <File Id='TfsBuildNotificationsModel' Name='Tfs.BuildNotifications.Model.dll' DiskId='1' Source='$(var.BinariesDir)/Tfs.BuildNotifications.Model.dll' KeyPath='no'></File>
+        <File Id='TfsBuildNotificationsWeb' Name='Tfs.BuildNotifications.Web.dll' DiskId='1' Source='$(var.BinariesDir)/Tfs.BuildNotifications.Web.dll' KeyPath='no'></File>
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+
+
+</Wix>
