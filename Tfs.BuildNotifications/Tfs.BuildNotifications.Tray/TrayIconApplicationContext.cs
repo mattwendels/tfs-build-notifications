@@ -23,7 +23,7 @@ namespace Tfs.BuildNotifications.Tray
         private readonly IBuildConfigurationService _buildConfigurationService;
         private readonly IAppConfig _appConfig;
 
-        public TrayIconApplicationContext([Dependency("ToolTip")]INotificationService notificationService,
+        public TrayIconApplicationContext([Dependency("Tray")]INotificationService notificationService,
             IBuildConfigurationService buildConfigurationService, IAppConfig appConfig) 
         {
             _notificationService = notificationService;

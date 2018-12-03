@@ -31,11 +31,11 @@ namespace Tfs.BuildNotifications.Tray.Infrastructure.Unity
 
             if (appConfig.UseToolTipNotifications || !IsWindows10())
             {
-                container.RegisterType<INotificationService, ToolTipNotificationService>("ToolTip");
+                container.RegisterType<INotificationService, ToolTipNotificationService>("Tray");
             }
             else
             {
-                container.RegisterType<INotificationService, ToastNotificationService>("ToolTip");
+                container.RegisterType<INotificationService, ToastNotificationService>("Tray");
             }
 
             if (appConfig.UseTextToSpeech)
