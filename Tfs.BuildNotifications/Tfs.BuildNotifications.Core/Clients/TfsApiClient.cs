@@ -97,8 +97,15 @@ namespace Tfs.BuildNotifications.Core.Clients
             
             var client = new RestClient(connection.TfsServerUrl);
 
-            client.Authenticator = new NtlmAuthenticator(credentials.UserName, credentials.Password);
-
+			if (connection.TfsServerDeployment == TfsServerDeployment.OnlineVsts)
+			{
+				client.Authenticator = new HttpBasicAuthenticator(credentials.UserName, credentials.Password);
+			}
+			else
+			{
+				client.Authenticator = new NtlmAuthenticator(credentials.UserName, credentials.Password);
+			}
+            
             var request = new RestRequest(resource);
 
             var response = client.Execute<T>(request);
