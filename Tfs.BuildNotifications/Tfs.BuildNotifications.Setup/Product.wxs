@@ -131,6 +131,9 @@
             <File Id="filD9F1735E84232DF5CB3E4A0EE23E5F6B" Source="$(var.WebDir)\Content\Styles\site.css" />
           </Component>
         </Directory>
+        <Component Id="cmp327489347589435" Guid="5A69EE08-E134-4F78-AF1A-CE4C5469461F">
+          <File Id="fil74859748939583" Source="$(var.WebDir)\Content\favicon.ico" />
+        </Component>
       </Directory>
       <Directory Id="dir090DC64620C7D1C13C77683C02ECE266" Name="Views">
         <Component Id="cmp12CD69822B375565A03CE1B435850CAC" Guid="298B73AA-82F8-4E6B-AA4D-F4356CF0F3CA">
@@ -219,6 +222,7 @@
       <ComponentRef Id="cmpFA7E1330DAE63F8A5A6EE2E9995DD958" />
       <ComponentRef Id="cmp4FCF52317FA21E0F4B6C950ED574108D" />
       <ComponentRef Id="cmp84EF926D38C0D75720A1993BBEF38B6B" />
+      <ComponentRef Id="cmp327489347589435" />
     </ComponentGroup>
   </Fragment>
 
